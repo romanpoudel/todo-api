@@ -6,8 +6,7 @@ import { ApiResponse } from "../utils/ApiResponse";
 import bcrypt from "bcrypt";
 import generateAccessAndRefreshToken from "../utils/tokenGenerator";
 import { RequestWithUser } from "../interface/requestUser";
-import config from "../config";
-import jwt from "jsonwebtoken";
+import { options } from "../utils/cookieOption";
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
@@ -66,10 +65,6 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     username: userExist.username,
     email: userExist.email,
   };
-  const options = {
-    httpOnly: true,
-    secure: config.environment === "production" ? true : false,
-  };
 
   res
     .status(201)
@@ -92,57 +87,10 @@ export const logoutUser = asyncHandler(
     }
     userExist.refreshToken = "";
 
-    const options = {
-      httpOnly: true,
-      secure: config.environment === "production" ? true : false,
-    };
     res
       .status(200)
       .clearCookie("accessToken", options)
       .clearCookie("refreshToken", options)
       .json(new ApiResponse(200, {}, "User logged out"));
-  }
-);
-
-export const refreshAccessToken = asyncHandler(
-  async (req: Request, res: Response) => {
-    const incomingRefreshToken =
-      req.cookies.refreshToken || req.body.refreshToken;
-    if (!incomingRefreshToken) {
-      throw new ApiError(401, "Unauthorized Request");
-    }
-    try {
-      const decodedToken = jwt.verify(
-        incomingRefreshToken,
-        config.jwt.refreshTokenSecret!
-      ) as jwt.JwtPayload;
-      const user = userModel.getUserById(decodedToken.id);
-      if (!user) {
-        throw new ApiError(401, "Invalid refresh token");
-      }
-      if (user.refreshToken !== incomingRefreshToken) {
-        throw new ApiError(401, "Invalid refresh token");
-      }
-      const { accessToken, refreshToken } =
-        await generateAccessAndRefreshToken(user);
-
-      const options = {
-        httpOnly: true,
-        secure: config.environment === "production" ? true : false,
-      };
-      res
-        .status(200)
-        .cookie("accessToken", accessToken, options)
-        .cookie("refreshToken", refreshToken, options)
-        .json(
-          new ApiResponse(
-            200,
-            { accessToken, refreshToken },
-            "Access token refreshed"
-          )
-        );
-    } catch (error: any) {
-      throw new ApiError(401, error?.message || "Invalid refresh token");
-    }
   }
 );

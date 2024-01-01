@@ -2,10 +2,10 @@ import { Router } from "express";
 import {
   loginUser,
   logoutUser,
-  refreshAccessToken,
   registerUser,
 } from "../controllers/user.controller";
 import { verifyJWT } from "../middlewares/auth.middleware";
+import { refreshAccessToken } from "../utils/tokenGenerator";
 
 const router = Router();
 
