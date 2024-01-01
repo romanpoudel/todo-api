@@ -1,28 +1,26 @@
-type User = {
-  id: number;
-  username: string;
-  email: string;
-  password: string;
-};
+import { User } from "../types/user";
 
-const users:User[] = [
+const users: User[] = [
   {
     id: 1,
     username: "rohan",
     email: "rohan@gmail.com",
     password: "123456",
+    refreshToken: "",
   },
   {
     id: 2,
     username: "roshan",
     email: "roshan@gmail.com",
     password: "123456",
+    refreshToken: "",
   },
   {
     id: 3,
     username: "sita",
     email: "sita@gmail.com",
     password: "123456",
+    refreshToken: "",
   },
 ];
 
@@ -30,7 +28,7 @@ export const getUsers = () => {
   return users;
 };
 
-export const addUser = (user:User) => {
+export const addUser = (user: User) => {
   users.push(user);
 };
 

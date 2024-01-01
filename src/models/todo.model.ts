@@ -1,8 +1,4 @@
-type Todo = {
-  id: number;
-  title: string;
-  completed: boolean;
-};
+import { Todo } from "../types/todo";
 
 const todos: Todo[]=[];
 

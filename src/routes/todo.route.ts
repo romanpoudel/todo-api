@@ -7,15 +7,16 @@ import {
   updateTodoStatus,
   updateTodoTitle,
 } from "../controllers/todo.controller";
+import { verifyJWT } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-router.route("/").get(displayTodos).post(createTodo).delete(deleteAllTodos);
+router.route("/").get(verifyJWT,displayTodos).post(verifyJWT,createTodo).delete(verifyJWT,deleteAllTodos);
 
 router
   .route("/:id")
-  .put(updateTodoTitle)
-  .patch(updateTodoStatus)
-  .delete(deleteSingleTodo);
+  .put(verifyJWT,updateTodoTitle)
+  .patch(verifyJWT,updateTodoStatus)
+  .delete(verifyJWT,deleteSingleTodo);
 
 export default router;
