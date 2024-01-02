@@ -2,7 +2,8 @@ import * as todoModel from "../models/todo.model";
 import { Request, Response } from "express";
 import { ApiResponse } from "../utils/ApiResponse";
 import asyncHandler from "../utils/asyncHandler";
-import { ApiError } from "../utils/ApiError";
+import validationError from "../error/validationError";
+import notFoundError from "../error/notFoundError";
 
 export const displayTodos = asyncHandler(async(req:Request,res:Response)=>{
   const todos = todoModel.getTodos();
@@ -12,7 +13,7 @@ export const displayTodos = asyncHandler(async(req:Request,res:Response)=>{
 export const createTodo = asyncHandler(async(req:Request,res:Response)=>{
   const {title} = req.body;
   if(title?.trim()===""){
-    throw new ApiError(400,"Field is empty");
+    throw new validationError("Field is empty");
   }
   const todos = todoModel.getTodos();
   const newTodo = {
@@ -28,7 +29,7 @@ export const updateTodoStatus = asyncHandler(async(req:Request,res:Response)=>{
   const {id} = req.params;
   const todo = todoModel.getTodoById(Number(id));
   if(!todo){
-    throw new ApiError(404,"Todo not found");
+    throw new notFoundError("Todo not found");
   }
   const updatedTodo = {
     ...todo,
@@ -42,11 +43,11 @@ export const updateTodoTitle = asyncHandler(async(req:Request,res:Response)=>{
   const {id} = req.params;
   const {title} = req.body;
   if(title?.trim()===""){
-    throw new ApiError(400,"Field is empty");
+    throw new validationError("Field is empty");
   }
   const todo = todoModel.getTodoById(Number(id));
   if(!todo){
-    throw new ApiError(404,"Todo not found");
+    throw new notFoundError("Todo not found");
   }
   const updatedTodo = {
     ...todo,
@@ -61,7 +62,7 @@ export const deleteSingleTodo = asyncHandler(async(req:Request,res:Response)=>{
   const todos = todoModel.getTodos();
   const todo = todoModel.getTodoById(Number(id));
   if(!todo){
-    throw new ApiError(404,"Todo not found");
+    throw new notFoundError("Todo not found");
   }
   todoModel.deleteTodoById(Number(id));
   res.status(200).json(new ApiResponse(200,todos,`Todo with ${id} deleted`));
@@ -70,7 +71,7 @@ export const deleteSingleTodo = asyncHandler(async(req:Request,res:Response)=>{
 export const deleteAllTodos = asyncHandler(async(req:Request,res:Response)=>{
   const todos = todoModel.getTodos();
   if(todos.length===0){
-    throw new ApiError(404,"No todos found");
+    throw new notFoundError("Nothing to delete");
   }
   todoModel.deleteAllTodos();
   res.status(200).json(new ApiResponse(200,todos,"All todos deleted"));
