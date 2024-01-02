@@ -7,10 +7,15 @@ import bcrypt from "bcrypt";
 import generateAccessAndRefreshToken from "../utils/tokenGenerator";
 import { RequestWithUser } from "../interface/requestUser";
 import { options } from "../utils/cookieOption";
+import { loginSchema, registerSchema } from "../schemas/user.schema";
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
     const { username, email, password } = req.body;
+    const {error} = registerSchema.validate(req.body);
+    if(error){
+      throw new ApiError(400,error.message);
+    }
     if ([email, username, password].some((field) => field?.trim() === "")) {
       throw new ApiError(400, "All fields are required");
     }
@@ -42,6 +47,10 @@ export const registerUser = asyncHandler(
 
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const { email, password } = req.body;
+  const { error } = loginSchema.validate(req.body);
+  if (error) {
+    throw new ApiError(400, error.message);
+  }
   if ([email, password].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "All fields are required");
   }
