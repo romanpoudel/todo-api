@@ -1,39 +1,35 @@
 import { User } from "../types/user";
+import BaseModel from "./baseModel";
 
-const users: User[] = [
-  {
-    id: 1,
-    username: "rohan",
-    email: "rohan@gmail.com",
-    password: "123456",
-    refreshToken: "",
-  },
-  {
-    id: 2,
-    username: "roshan",
-    email: "roshan@gmail.com",
-    password: "123456",
-    refreshToken: "",
-  },
-  {
-    id: 3,
-    username: "sita",
-    email: "sita@gmail.com",
-    password: "123456",
-    refreshToken: "",
-  },
-];
+export default class UserModel extends BaseModel {
 
-export const getUsers = () => {
-  return users;
-};
+  static async getUsers() {
+    return this.queryBuilder()
+      .select({
+        id: "id",
+        username: "username",
+      })
+      .from("users");
+  }
 
-export const addUser = (user: User) => {
-  users.push(user);
-};
+  static async getUserById(id: number) {
+    return this.queryBuilder()
+      .select({
+        id: "id",
+        username: "username",
+      })
+      .from("users")
+      .where({ id })
+      .first();
+  }
 
-export const getUserById = (id: number) => {
-  const user = users.find(({ id: userId }) => userId === id);
 
-  return user;
-};
+  static async addUser(user: User) {
+    return this.queryBuilder().insert(user).table("users");
+  }
+
+
+  static async deleteUser(id: number) {
+    return this.queryBuilder().table("users").where({ id }).del();
+  }
+}

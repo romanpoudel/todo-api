@@ -1,33 +1,46 @@
 import { Todo } from "../types/todo";
+import BaseModel from "./baseModel";
 
-const todos: Todo[]=[];
+export default class TodoModel extends BaseModel {
+  static async getTodos() {
+    return this.queryBuilder()
+      .select({
+        id: "t.id",
+        title: "title",
+        completed: "completed",
+        createdBy: "created_by",
+        username: "u.username",
+      })
+      .from({ t: "todos" })
+      .leftJoin({ u: "users" }, { "t.created_by": "u.id" });
+  }
 
-export const getTodos = () => {
-  return todos;
-};
+  static async getTodoById(id: number, userId: number) {
+    return this.queryBuilder()
+      .select({
+        id: "id",
+        title: "title",
+        completed: "completed",
+        createdBy: "created_by",
+      })
+      .from("todos")
+      .where({ id, createdBy: userId })
+      .first();
+  }
 
-export const addTodo = (todo: Todo) => {
-  todos.push(todo);
-};
+  static async addTodo(todo: Todo) {
+    return this.queryBuilder().insert(todo).table("todos");
+  }
 
-export const getTodoById = (id: number) => {
-  const todo = todos.find(({ id: todoId }) => todoId === id);
+  static async updateTodo(id: number, todo: Todo) {
+    return this.queryBuilder().update(todo).table("todos").where({ id });
+  }
 
-  return todo;
-};
+  static async deleteTodo(id: number) {
+    return this.queryBuilder().table("todos").where({ id }).del();
+  }
 
-export const updateTodo = (id: number, todo: Todo) => {
-  const index = todos.findIndex(({ id: todoId }) => todoId === id);
-
-  todos[index] = todo;
-};
-
-export const deleteTodoById = (id: number) => {
-  const index = todos.findIndex(({ id: todoId }) => todoId === id);
-
-  todos.splice(index, 1);
-};
-
-export const deleteAllTodos = () => {
-  todos.splice(0, todos.length);
-};
+  static async deleteAllTodos() {
+    return this.queryBuilder().table("todos").del();
+  }
+}
