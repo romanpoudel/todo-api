@@ -2,7 +2,7 @@ import { ApiError } from "../utils/ApiError";
 import asyncHandler from "../utils/asyncHandler";
 import jwt from "jsonwebtoken";
 import config from "../config";
-import  UserModel  from "../models/user.model";
+import UserModel from "../models/user.model";
 import { NextFunction } from "express";
 import { RequestWithUser } from "../interface/requestUser";
 

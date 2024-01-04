@@ -14,7 +14,7 @@ export async function up(knex: Knex): Promise<void> {
     table.string("email").notNullable();
     table.string("username").notNullable();
     table.string("password").notNullable();
-    table.string("refreshToken").notNullable().defaultTo("");
+    table.string("refresh_token").notNullable().defaultTo("");
 
     table.timestamp("created_at").notNullable().defaultTo(knex.raw("now()"));
 
