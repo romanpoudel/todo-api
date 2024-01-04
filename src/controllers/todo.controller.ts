@@ -1,4 +1,4 @@
-import * as todoModel from "../models/todo.model";
+import TodoModel from "../models/todo.model";
 import { Request, Response } from "express";
 import { ApiResponse } from "../utils/ApiResponse";
 import asyncHandler from "../utils/asyncHandler";
@@ -6,7 +6,7 @@ import validationError from "../error/validationError";
 import notFoundError from "../error/notFoundError";
 
 export const displayTodos = asyncHandler(async(req:Request,res:Response)=>{
-  const todos = todoModel.getTodos();
+  const todos = TodoModel.getTodos();
   res.status(200).json(new ApiResponse(200, todos, "Todos retrieved"));
 });
 
@@ -15,19 +15,19 @@ export const createTodo = asyncHandler(async(req:Request,res:Response)=>{
   if(title?.trim()===""){
     throw new validationError("Field is empty");
   }
-  const todos = todoModel.getTodos();
+  const todos =await TodoModel.getTodos();
   const newTodo = {
     id:todos.length+1,
     title,
     completed:false,
   };
-  todoModel.addTodo(newTodo);
+  TodoModel.addTodo(newTodo);
   res.status(201).json(new ApiResponse(201,todos,"Todo created"));
 });
 
 export const updateTodoStatus = asyncHandler(async(req:Request,res:Response)=>{
   const {id} = req.params;
-  const todo = todoModel.getTodoById(Number(id));
+  const todo =await TodoModel.getTodoById(Number(id));
   if(!todo){
     throw new notFoundError("Todo not found");
   }
@@ -35,7 +35,7 @@ export const updateTodoStatus = asyncHandler(async(req:Request,res:Response)=>{
     ...todo,
     completed:!todo.completed,
   };
-  todoModel.updateTodo(Number(id),updatedTodo);
+  TodoModel.updateTodo(Number(id),{ ...updatedTodo, id: todo.id, title: todo.title });
   res.status(200).json(new ApiResponse(200,updatedTodo,"Todo updated"));
 });
 
@@ -45,7 +45,7 @@ export const updateTodoTitle = asyncHandler(async(req:Request,res:Response)=>{
   if(title?.trim()===""){
     throw new validationError("Field is empty");
   }
-  const todo = todoModel.getTodoById(Number(id));
+  const todo = await TodoModel.getTodoById(Number(id));
   if(!todo){
     throw new notFoundError("Todo not found");
   }
@@ -53,26 +53,26 @@ export const updateTodoTitle = asyncHandler(async(req:Request,res:Response)=>{
     ...todo,
     title,
   };
-  todoModel.updateTodo(Number(id),updatedTodo);
+  TodoModel.updateTodo(Number(id),updatedTodo);
   res.status(200).json(new ApiResponse(200,updatedTodo,"Todo updated"));
 });
 
 export const deleteSingleTodo = asyncHandler(async(req:Request,res:Response)=>{
   const {id} = req.params;
-  const todos = todoModel.getTodos();
-  const todo = todoModel.getTodoById(Number(id));
+  const todos = TodoModel.getTodos();
+  const todo = TodoModel.getTodoById(Number(id));
   if(!todo){
     throw new notFoundError("Todo not found");
   }
-  todoModel.deleteTodoById(Number(id));
+  TodoModel.deleteTodoById(Number(id));
   res.status(200).json(new ApiResponse(200,todos,`Todo with ${id} deleted`));
 });
 
 export const deleteAllTodos = asyncHandler(async(req:Request,res:Response)=>{
-  const todos = todoModel.getTodos();
+  const todos =await TodoModel.getTodos();
   if(todos.length===0){
     throw new notFoundError("Nothing to delete");
   }
-  todoModel.deleteAllTodos();
+  TodoModel.deleteAllTodos();
   res.status(200).json(new ApiResponse(200,todos,"All todos deleted"));
 });

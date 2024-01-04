@@ -15,7 +15,7 @@ export default class TodoModel extends BaseModel {
       .leftJoin({ u: "users" }, { "t.created_by": "u.id" });
   }
 
-  static async getTodoById(id: number, userId: number) {
+  static async getTodoById(id: number) {
     return this.queryBuilder()
       .select({
         id: "id",
@@ -24,7 +24,7 @@ export default class TodoModel extends BaseModel {
         createdBy: "created_by",
       })
       .from("todos")
-      .where({ id, createdBy: userId })
+      .where({ id })
       .first();
   }
 
@@ -36,7 +36,7 @@ export default class TodoModel extends BaseModel {
     return this.queryBuilder().update(todo).table("todos").where({ id });
   }
 
-  static async deleteTodo(id: number) {
+  static async deleteTodoById(id: number) {
     return this.queryBuilder().table("todos").where({ id }).del();
   }
 

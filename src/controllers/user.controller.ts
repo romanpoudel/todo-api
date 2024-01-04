@@ -1,4 +1,4 @@
-import * as userModel from "../models/user.model";
+import UserModel from "../models/user.model";
 import { Request, Response } from "express";
 import asyncHandler from "../utils/asyncHandler";
 import { ApiError } from "../utils/ApiError";
@@ -8,6 +8,7 @@ import generateAccessAndRefreshToken from "../utils/tokenGenerator";
 import { RequestWithUser } from "../interface/requestUser";
 import { options } from "../utils/cookieOption";
 import { loginSchema, registerSchema } from "../schemas/user.schema";
+
 
 export const registerUser = asyncHandler(
   async (req: Request, res: Response) => {
@@ -19,7 +20,7 @@ export const registerUser = asyncHandler(
     if ([email, username, password].some((field) => field?.trim() === "")) {
       throw new ApiError(400, "All fields are required");
     }
-    const users = userModel.getUsers();
+    const users =await UserModel.getUsers();
     const userExist = users.find(
       (user) => user.email === email || user.username === username
     );
@@ -35,7 +36,7 @@ export const registerUser = asyncHandler(
       password: hashedPassword,
       refreshToken: "",
     };
-    userModel.addUser(newUser);
+    UserModel.addUser(newUser);
     const response = {
       id: newUser.id,
       username: newUser.username,
@@ -54,7 +55,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   if ([email, password].some((field) => field?.trim() === "")) {
     throw new ApiError(400, "All fields are required");
   }
-  const users = userModel.getUsers();
+  const users =await UserModel.getUsers();
   const userExist = users.find((user) => user.email === email);
   if (!userExist) {
     throw new ApiError(404, "User not found");
@@ -90,7 +91,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response) => {
 
 export const logoutUser = asyncHandler(
   async (req: RequestWithUser, res: Response) => {
-    const userExist = userModel.getUserById(req.user?.id!);
+    const userExist =await UserModel.getUserById(req.user?.id!);
     if (!userExist) {
       throw new ApiError(404, "User not found");
     }
