@@ -4,7 +4,7 @@ import { User } from "../types/user";
 import asyncHandler from "./asyncHandler";
 import { Request, Response } from "express";
 import { ApiError } from "./ApiError";
-import { getUserById } from "../models/user.model";
+import UserModel from "../models/user.model";
 import { ApiResponse } from "./ApiResponse";
 import { options } from "./cookieOption";
 
@@ -34,7 +34,7 @@ export const refreshAccessToken = asyncHandler(
         incomingRefreshToken,
         config.jwt.refreshTokenSecret!
       ) as jwt.JwtPayload;
-      const user = getUserById(decodedToken.id);
+      const user = await UserModel.getUserById(decodedToken.id);
       if (!user) {
         throw new ApiError(401, "Invalid refresh token");
       }

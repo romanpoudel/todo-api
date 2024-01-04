@@ -2,7 +2,7 @@ import { ApiError } from "../utils/ApiError";
 import asyncHandler from "../utils/asyncHandler";
 import jwt from "jsonwebtoken";
 import config from "../config";
-import { getUserById } from "../models/user.model";
+import UserModel from "../models/user.model";
 import { NextFunction } from "express";
 import { RequestWithUser } from "../interface/requestUser";
 
@@ -19,7 +19,7 @@ export const verifyJWT = asyncHandler(
         token,
         config.jwt.accessTokenSecret!
       ) as jwt.JwtPayload;
-      const user = getUserById(decodedToken.id);
+      const user =await UserModel.getUserById(decodedToken.id);
       if (!user) {
         throw new ApiError(401, "Invalid access token");
       }
