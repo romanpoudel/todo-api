@@ -13,9 +13,9 @@ export async function up(knex: Knex): Promise<void> {
     table.bigIncrements("id").primary().notNullable();
     table.string("title").notNullable();
 
-    table.boolean("completed").notNullable().defaultTo(false);
+    table.boolean("completed").nullable().defaultTo(false);
 
-    table.timestamp("created_at").notNullable().defaultTo(knex.raw("now()"));
+    table.timestamp("created_at").nullable().defaultTo(knex.raw("now()"));
 
     table
       .bigInteger("created_by")

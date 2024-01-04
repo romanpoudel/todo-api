@@ -4,9 +4,22 @@ import { ApiResponse } from "../utils/ApiResponse";
 import asyncHandler from "../utils/asyncHandler";
 import validationError from "../error/validationError";
 import notFoundError from "../error/notFoundError";
+import { buildMeta,getPaginationOptions } from "../utils/pagination";
 
 export const displayTodos = asyncHandler(async(req:Request,res:Response)=>{
-  const todos = TodoModel.getTodos();
+  const { page, size } = req.query;
+  const parsedPage = parseInt(page as string);
+  const parsedSize = parseInt(size as string);
+  const pageDetails = getPaginationOptions({ page: parsedPage, size: parsedSize });
+  const projectsPromise =await TodoModel.getAll({ ...pageDetails, page: parsedPage, size: parsedSize });
+  const countPromise =await TodoModel.countAll(req.query);
+  const [projects, count] = await Promise.all([projectsPromise, countPromise]);
+  const total = count.count;
+  const meta = buildMeta(total, parsedSize, parsedPage);
+  const todos = {
+    meta,
+    projects,
+  };
   res.status(200).json(new ApiResponse(200, todos, "Todos retrieved"));
 });
 

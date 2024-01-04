@@ -12,7 +12,10 @@ export const getPaginationOptions = (option: {
   page?: number;
   size?: number;
 }) => {
-  const { page = DEFAULT_PAGE, size = DEFAULT_PAGE_SIZE } = option;
+  let { page = DEFAULT_PAGE, size = DEFAULT_PAGE_SIZE } = option;
+    // Ensure page and size are valid integers
+    page = Number.isInteger(page) ? page : DEFAULT_PAGE;
+    size = Number.isInteger(size) ? size : DEFAULT_PAGE_SIZE;
 
   const offset = (page - 1) * size;
 

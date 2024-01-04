@@ -2,6 +2,21 @@ import { Todo } from "../types/todo";
 import BaseModel from "./baseModel";
 
 export default class TodoModel extends BaseModel {
+  static async getAll(params: any) {
+    const query = this.queryBuilder()
+      .select({
+        id: "id",
+        title: "title",
+        completed: "completed",
+        createdBy: "created_by",
+      })
+      .table("todos");
+
+    query.offset(params.offset).limit(params.limit);
+
+    return query;
+  }
+
   static async getTodos() {
     return this.queryBuilder()
       .select({
@@ -26,6 +41,15 @@ export default class TodoModel extends BaseModel {
       .from("todos")
       .where({ id })
       .first();
+  }
+
+  static countAll(params: any) {
+    const query = this.queryBuilder()
+      .table("todos")
+      .count("* as count")
+      .first();
+
+    return query;
   }
 
   static async addTodo(todo: Todo) {

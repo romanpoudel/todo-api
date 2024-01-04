@@ -8,6 +8,8 @@ export default class UserModel extends BaseModel {
       .select({
         id: "id",
         username: "username",
+        email: "email",
+        password: "password",
       })
       .from("users");
   }
