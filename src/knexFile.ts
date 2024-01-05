@@ -1,17 +1,17 @@
 import { Knex } from "knex";
 
 import config from "./config";
+import db from "./db";
 
-// const { database: dbConfig } = config;
+const { database: dbConfig } = config;
 
 export const baseKnexConfig = {
-  client: 'pg',
+  client: dbConfig.client,
   connection: {
-    database: 'todo_api',
-    host: '127.0.0.1',
-    password: 'sainik@28',
-    // port: dbConfig.port,
-    user: 'postgres',
+    database: dbConfig.database,
+    host: dbConfig.host,
+    password: dbConfig.password,
+    user: dbConfig.user,
   },
 };
 

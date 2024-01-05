@@ -8,15 +8,16 @@
 		"start": "ts-node src/index.ts",
 		"build": "tsc",
 		"knex": "knex --knexfile=src/knexFile.ts",
-    "make:migration": "npm run knex migrate:make ",
-    "migrate": "npm run knex migrate:latest --verbose",
-    "rollback": "npm run knex migrate:rollback --step 1 --verbose",
-    "seed": "npm run knex seed:run --verbose",
-    "make:seeder": "npm run knex seed:make "
+		"make:migration": "npm run knex migrate:make ",
+		"migrate": "npm run knex migrate:latest --verbose",
+		"rollback": "npm run knex migrate:rollback --step 1 --verbose",
+		"seed": "npm run knex seed:run --verbose",
+		"make:seeder": "npm run knex seed:make "
 	},
 	"author": "Roman Poudel",
 	"license": "ISC",
 	"devDependencies": {
+		"@types/bcrypt": "^5.0.2",
 		"@types/camelize": "^1.0.0",
 		"@types/cookie-parser": "^1.4.6",
 		"@types/express": "^4.17.21",
@@ -30,7 +31,6 @@
 		"typescript": "^5.3.3"
 	},
 	"dependencies": {
-		"@types/bcrypt": "^5.0.2",
 		"bcrypt": "^5.1.1",
 		"camelize": "^1.0.1",
 		"cookie-parser": "^1.4.6",
