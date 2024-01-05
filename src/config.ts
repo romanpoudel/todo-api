@@ -1,13 +1,20 @@
-const config = {
-  serverPort: process.env.SERVER_PORT|| 8000,
+import { config } from "dotenv";
+
+const pathToEnv = __dirname + "/../.env";
+
+config({ path: pathToEnv });
+
+const serverConfig = {
+  serverPort: process.env.SERVER_PORT || 8000,
+
   jwt: {
     accessTokenSecret: process.env.ACCESS_TOKEN_SECRET,
     refreshTokenSecret: process.env.REFRESH_TOKEN_SECRET,
-    accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRY || "15m",
-    refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRY || "7d",
+    accessTokenExpiresIn: process.env.ACCESS_TOKEN_EXPIRY,
+    refreshTokenExpiresIn: process.env.REFRESH_TOKEN_EXPIRY,
   },
-  environment: process.env.NODE_ENV || "development",
-  database:{
+
+  database: {
     charset: "utf8",
     client: process.env.DB_CLIENT,
     database: process.env.DB_NAME,
@@ -16,7 +23,8 @@ const config = {
     port: Number(process.env.DB_PORT),
     timezone: "UTC",
     user: process.env.DB_USER,
-  }
+  },
+  environment: process.env.NODE_ENV,
 };
 
-export default config;
+export default serverConfig;
